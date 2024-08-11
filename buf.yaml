@@ -1,0 +1,22 @@
+# For details on buf.yaml configuration, visit https://buf.build/docs/configuration/v2/buf-yaml
+version: v2
+modules:
+  - path: proto
+  - path: vendor.protobuf
+# Lint: https://buf.build/docs/lint/overview#defaults-and-configuration
+# Categories: https://buf.build/docs/lint/rules
+lint:
+  use:
+    - STANDARD
+    - COMMENTS
+  ignore:
+    - vendor.protobuf
+breaking:
+  use:
+    - FILE
+# Dependency management by BSR: https://buf.build/docs/bsr/module/dependency-management#how-the-bsr-protects-your-dependencies
+# Need VPN
+# deps:
+#   - buf.build/googleapis/googleapis
+#   - buf.build/grpc-ecosystem/grpc-gateway
+#   - buf.build/bufbuild/protovalidate

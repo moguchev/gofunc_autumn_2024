@@ -1,0 +1,162 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Example Service",
+    "version": "0.1.0",
+    "contact": {
+      "name": "Леонид Ченский",
+      "url": "https://t.me/leoscode",
+      "email": "leolegrand1014@gmail.com"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"
+    }
+  },
+  "tags": [
+    {
+      "name": "ExampleService",
+      "description": "ExampleService - серивис пример",
+      "externalDocs": {
+        "description": "Find out more about EchoService",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/notes": {
+      "post": {
+        "summary": "CreateNote",
+        "description": "CreateNote - метод создания заметки",
+        "operationId": "ExampleService_CreateNote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateNoteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "note",
+            "description": "note - заметка",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateNoteRequestNote",
+              "required": [
+                "note"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "ExampleService"
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateNoteRequestNote": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "title - название заметки"
+        },
+        "content": {
+          "type": "string",
+          "title": "content - содержание заметки"
+        },
+        "author_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "author_id - id автора"
+        }
+      },
+      "description": "note message",
+      "title": "Note",
+      "externalDocs": {
+        "description": "Find out more about validate",
+        "url": "https://github.com/bufbuild/protovalidate"
+      },
+      "required": [
+        "title",
+        "content",
+        "author_id"
+      ]
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateNoteResponse": {
+      "type": "object",
+      "properties": {
+        "note_id": {
+          "type": "string",
+          "format": "uuid",
+          "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+          "description": "id созданной записи",
+          "title": "note_id",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+        }
+      },
+      "description": "ответ CreateNote",
+      "title": "CreateNoteResponse",
+      "externalDocs": {
+        "description": "Find out more about ABitOfEverything",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+  }
+}

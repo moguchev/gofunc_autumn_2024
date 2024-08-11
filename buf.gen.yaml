@@ -1,0 +1,43 @@
+# Подробнее: https://buf.build/docs/configuration/v2/buf-gen-yaml
+version: v2
+managed:
+  # 'enabled: true' turns managed mode on, 'enabled: false' ignores all managed mode options.
+  enabled: true # default: false
+  disable:
+    # Don't modify any files in vendor.protobuf
+    - path: vendor.protobuf
+plugins:
+  # protoc-gen-go - генерация go типов для message и enum (https://github.com/protocolbuffers/protobuf-go)
+  - local: protoc-gen-go
+    out: pkg
+    opt:
+      - paths=source_relative
+  # protoc-gen-go-grpc - генерация grpc сервиса и клиента (https://github.com/grpc/grpc-go)
+  - local: protoc-gen-go-grpc
+    out: pkg
+    opt:
+      - paths=source_relative
+  # protoc-gen-grpc-gateway - генерация grpc-gateway RESTful HTTP proxy (https://github.com/grpc-ecosystem/grpc-gateway)
+  - local: protoc-gen-grpc-gateway
+    out: pkg
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+      - standalone=false
+      - logtostderr=true
+  # protoc-gen-openapiv2 - генерация Swagger (OpenAPI v2) (https://github.com/grpc-ecosystem/grpc-gateway)
+  - local: protoc-gen-openapiv2 # https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_openapi_output/
+    out: swagger
+    strategy: all
+    opt:
+      - generate_unbound_methods=true
+      - logtostderr=true
+      - allow_merge=true
+      - merge_file_name=swagger
+inputs:
+  - directory: proto # путь до наших protobuf файлов
+  # - git_repo: github.com/moguchev/gofunc_autumn_2024
+  #   branch: master
+  #   tag: master
+  #   subdir: proto
+  #   depth: 5

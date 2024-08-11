@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package api.example.v1; // уникальное название пакета
+
+import "api/example/v1/messages.proto"; // относительный путь proto
+import "google/api/annotations.proto"; // внешние зависимости (google.api.field_behavior)
+import "protoc-gen-openapiv2/options/annotations.proto"; // внешние зависимости (grpc.gateway.protoc_gen_openapiv2)
+
+option go_package = "github.com/moguchev/gofunc_autumn_2024/pkg/api/example/v1;example"; // указываем расположение пакета для сгенерированных .pb.go файлов
+// OpenAPI (Swagger) спецификация
+// Больше примеров: https://github.com/grpc-ecosystem/grpc-gateway/blob/main/examples/internal/proto/examplepb/a_bit_of_everything.proto
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Example Service"
+    version: "0.1.0"
+    contact: {
+      name: "Леонид Ченский"
+      url: "https://t.me/leoscode"
+      email: "leolegrand1014@gmail.com"
+    }
+    license: {
+      name: "BSD 3-Clause License"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"
+    }
+  }
+  external_docs: {
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    description: "More about gRPC-Gateway"
+  }
+  schemes: HTTP
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+};
+
+// ExampleService - серивис пример
+service ExampleService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {// from "protoc-gen-openapiv2/options/annotations.proto"
+    name: "ExampleService"
+    description: "ExampleService - серивис пример"
+    external_docs: {
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      description: "Find out more about EchoService"
+    }
+  };
+
+  // CreateNote - метод создания заметки
+  rpc CreateNote(CreateNoteRequest) returns (CreateNoteResponse) {
+    option (google.api.http) = {// from "google/api/annotations.proto"
+      post: "/api/v1/notes"
+      body: "note"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {// from "protoc-gen-openapiv2/options/annotations.proto"
+      description: "CreateNote - метод создания заметки"
+      summary: "CreateNote"
+      external_docs: {
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+        description: "Find out more Echo"
+      }
+    };
+  }
+}

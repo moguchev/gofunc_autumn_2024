@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package api.example.v1; // уникальное название пакета
+
+import "buf/validate/validate.proto"; // внешние зависимости (buf.validate)
+import "google/api/field_behavior.proto"; // внешние зависимости (google.api.field_behavior)
+import "protoc-gen-openapiv2/options/annotations.proto"; // внешние зависимости (grpc.gateway.protoc_gen_openapiv2)
+
+option go_package = "github.com/moguchev/gofunc_autumn_2024/pkg/api/example/v1;example"; // указываем расположение пакета для сгенерированных .pb.go файлов
+
+// CreateNote - запрос CreateNote
+message CreateNoteRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "CreateNoteRequest"
+      description: "запрос CreateNote"
+      required: ["note"]
+    }
+    external_docs: {
+      url: "https://github.com/bufbuild/protovalidate"
+      description: "Find out more about validate"
+    }
+  };
+
+  // Note - note message
+  message Note {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        title: "Note"
+        description: "note message"
+        required: [
+          "title",
+          "content",
+          "author_id"
+        ]
+      }
+      external_docs: {
+        url: "https://github.com/bufbuild/protovalidate"
+        description: "Find out more about validate"
+      }
+    };
+
+    // title - название заметки
+    string title = 1 [
+      json_name = "title",
+      (google.api.field_behavior) = REQUIRED,
+      (buf.validate.field).string.min_len = 1
+    ];
+
+    // content - содержание заметки
+    string content = 2 [
+      json_name = "content",
+      (google.api.field_behavior) = REQUIRED,
+      (buf.validate.field).string.min_len = 1
+    ];
+
+    // author_id - id автора
+    uint64 author_id = 3 [
+      json_name = "author_id",
+      (google.api.field_behavior) = REQUIRED,
+      (buf.validate.field).uint64.gt = 0
+    ];
+  }
+
+  // note - заметка
+  Note note = 1 [
+    json_name = "note",
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).required = true
+  ];
+}
+
+// CreateNoteResponse - ответ CreateNote
+message CreateNoteResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "CreateNoteResponse"
+      description: "ответ CreateNote"
+    }
+    external_docs: {
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      description: "Find out more about ABitOfEverything"
+    }
+  };
+
+  // note_id - id созданной записи
+  string note_id = 1 [
+    json_name = "note_id",
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+      title: "note_id"
+      description: "id созданной записи"
+      format: "uuid"
+      example: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
+    }
+  ];
+}
