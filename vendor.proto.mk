@@ -16,8 +16,8 @@ vendor:	.vendor-reset .vendor-googleapis .vendor-google-protobuf .vendor-protova
 	cd $(VENDOR_PROTO_PATH)/protobuf &&\
 	git sparse-checkout set --no-cone src/google/protobuf &&\
 	git checkout
-	mkdir -p $(VENDOR_PROTO_PATH)/google
-	mv $(VENDOR_PROTO_PATH)/protobuf/src/google/protobuf $(VENDOR_PROTO_PATH)/google
+	mkdir -p $(VENDOR_PROTO_PATH)/google/protobuf
+	find $(VENDOR_PROTO_PATH)/protobuf/src/google/protobuf -maxdepth 1 -type f -exec mv {} $(VENDOR_PROTO_PATH)/google/protobuf \;
 	rm -rf $(VENDOR_PROTO_PATH)/protobuf
 
 # Устанавливаем proto описания google/api
@@ -25,8 +25,10 @@ vendor:	.vendor-reset .vendor-googleapis .vendor-google-protobuf .vendor-protova
 	git clone -b master --single-branch -n --depth=1 --filter=tree:0 \
 		https://github.com/googleapis/googleapis $(VENDOR_PROTO_PATH)/googleapis &&\
 	cd $(VENDOR_PROTO_PATH)/googleapis &&\
+	git sparse-checkout set --no-cone google/api &&\
 	git checkout
-	mv $(VENDOR_PROTO_PATH)/googleapis/google $(VENDOR_PROTO_PATH)
+	mkdir -p $(VENDOR_PROTO_PATH)/google/api
+	find $(VENDOR_PROTO_PATH)/googleapis/google/api -maxdepth 1 -type f -exec mv {} $(VENDOR_PROTO_PATH)/google/api \;
 	rm -rf $(VENDOR_PROTO_PATH)/googleapis
 
 # Устанавливаем proto описания protoc-gen-openapiv2/options
@@ -52,6 +54,7 @@ vendor:	.vendor-reset .vendor-googleapis .vendor-google-protobuf .vendor-protova
 # delete all non .proto files
 .vendor-tidy:
 	find $(VENDOR_PROTO_PATH) -type f ! -name "*.proto" -delete
+	find $(VENDOR_PROTO_PATH) -type f \( -name "*unittest*.proto" -o -name "*test*.proto" -o -name "*sample*.proto" \) -delete
 	find $(VENDOR_PROTO_PATH) -empty -type d -delete
 
 # Объявляем, что текущие команды не являются файлами и

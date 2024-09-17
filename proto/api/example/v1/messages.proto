@@ -44,21 +44,54 @@ message CreateNoteRequest {
     string title = 1 [
       json_name = "title",
       (google.api.field_behavior) = REQUIRED,
-      (buf.validate.field).string.min_len = 1
+      (buf.validate.field).string = {
+        min_len: 3
+        max_len: 256
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        title: "title"
+        description: "название заметки"
+        example: "\"My Awesome Title\""
+        min_length: 3
+        max_length: 256
+        pattern: "^[a-zA-Z0-9 -]+$"
+        type: STRING
+        format: "string"
+      }
     ];
 
     // content - содержание заметки
     string content = 2 [
       json_name = "content",
       (google.api.field_behavior) = REQUIRED,
-      (buf.validate.field).string.min_len = 1
+      (buf.validate.field).string = {
+        min_len: 1
+        max_len: 4096
+      },
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        title: "title"
+        description: "название заметки"
+        example: "\"My Awesome Content\""
+        min_length: 1
+        max_length: 4096
+        type: STRING
+        format: "string"
+      }
     ];
 
     // author_id - id автора
     uint64 author_id = 3 [
       json_name = "author_id",
       (google.api.field_behavior) = REQUIRED,
-      (buf.validate.field).uint64.gt = 0
+      (buf.validate.field).uint64.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        title: "author_id"
+        description: "id автора"
+        example: "1234"
+        minimum: 1
+        type: NUMBER
+        format: "string"
+      }
     ];
   }
 

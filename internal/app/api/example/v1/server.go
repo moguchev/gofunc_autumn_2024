@@ -1,8 +1,6 @@
 package examplev1
 
 import (
-	"fmt"
-
 	"github.com/bufbuild/protovalidate-go"
 	pb "github.com/moguchev/gofunc_autumn_2024/pkg/api/example/v1"
 )
@@ -18,13 +16,7 @@ type ExampleServiceServerImplementation struct {
 }
 
 // NewExampleServiceServerImplementation - конструктор ExampleServiceServerImplementation
-func NewExampleServiceServerImplementation() (*ExampleServiceServerImplementation, error) {
-	// protovalidate validator
-	validator, err := protovalidate.New()
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize validator: %w", err)
-	}
-
+func NewExampleServiceServerImplementation(validator *protovalidate.Validator) (*ExampleServiceServerImplementation, error) {
 	return &ExampleServiceServerImplementation{
 		validator: validator,
 	}, nil

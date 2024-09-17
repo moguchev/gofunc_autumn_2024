@@ -83,16 +83,30 @@
       "properties": {
         "title": {
           "type": "string",
-          "title": "title - название заметки"
+          "format": "string",
+          "example": "My Awesome Title",
+          "description": "название заметки",
+          "title": "title",
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^[a-zA-Z0-9 -]+$"
         },
         "content": {
           "type": "string",
-          "title": "content - содержание заметки"
+          "format": "string",
+          "example": "My Awesome Content",
+          "description": "название заметки",
+          "title": "title",
+          "maxLength": 4096,
+          "minLength": 1
         },
         "author_id": {
-          "type": "string",
-          "format": "uint64",
-          "title": "author_id - id автора"
+          "type": "number",
+          "format": "string",
+          "example": 1234,
+          "description": "id автора",
+          "title": "author_id",
+          "minimum": 1
         }
       },
       "description": "note message",

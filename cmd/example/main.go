@@ -2,57 +2,75 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"log"
-	"net"
-	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/bufbuild/protovalidate-go"
+	config "github.com/moguchev/gofunc_autumn_2024"
 	examplev1 "github.com/moguchev/gofunc_autumn_2024/internal/app/api/example/v1"
+	"github.com/moguchev/gofunc_autumn_2024/internal/middleware"
 	pb "github.com/moguchev/gofunc_autumn_2024/pkg/api/example/v1"
+	"github.com/moguchev/gofunc_autumn_2024/pkg/logger"
+	rkboot "github.com/rookie-ninja/rk-boot/v2"
+	rkentry "github.com/rookie-ninja/rk-entry/v2/entry"
+	rkgrpc "github.com/rookie-ninja/rk-grpc/v2/boot"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/reflection"
 )
 
-const GRPC_PORT = ":80"
-
 func main() {
-	lis, err := net.Listen("tcp", GRPC_PORT)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	// TLS/SSL
-	tlsConfig := &tls.Config{ /* ... */ }
+	logger.Info("start")
 
-	srv, err := examplev1.NewExampleServiceServerImplementation()
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
+	// Загрузжаем basic entries из конфигурации (boot.yaml).
+	rkentry.BootstrapBuiltInEntryFromYAML(config.Boot)
+	rkentry.BootstrapPluginEntryFromYAML(config.Boot)
 
-	// gRPC-Gateway
-	mux := runtime.NewServeMux()
-	err = pb.RegisterExampleServiceHandlerServer(context.TODO(), mux, srv)
-	if err != nil {
-		log.Fatalf("failed to register handler:: %v", err)
-	}
-	httpServer := &http.Server{
-		Handler:   mux,
-		Addr:      GRPC_PORT,
-		TLSConfig: tlsConfig,
-	}
-	go httpServer.ListenAndServe()
-
-	// gRPC
-	grpcServer := grpc.NewServer(
-		grpc.Creds(credentials.NewTLS(tlsConfig)),
+	// Загрузжаем entries из конфигурации (boot.yaml).
+	boot := rkboot.NewBoot(
+		rkboot.WithBootConfigRaw(config.Boot),
 	)
-	pb.RegisterExampleServiceServer(grpcServer, srv)
 
-	reflection.Register(grpcServer)
+	// Конфиг приложения
+	cfg := rkentry.GlobalAppCtx.GetConfigEntry("config")
 
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("serve: %v", err)
+	logger.Debug("read config", // Для примера
+		zap.String("key", cfg.GetString("key")),
+		zap.String("key1", cfg.GetString("key1")),
+		zap.String("key2", cfg.GetString("key2")),
+	)
+
+	// protovalidate validator
+	validator, err := protovalidate.New(
+		protovalidate.WithFailFast(true),
+	)
+	if err != nil {
+		log.Fatalf("failed to initialize validator: %v", err)
 	}
+
+	// Инициализация нашего RPC обработчика
+	srv, err := examplev1.NewExampleServiceServerImplementation(validator)
+	if err != nil {
+		log.Fatalf("couldn't create server: %v", err)
+	}
+
+	// Получение GrpcEntry
+	grpcEntry := rkgrpc.GetGrpcEntry("example") // название entry
+	// Регистрация gRPC сервера
+	grpcEntry.AddRegFuncGrpc(func(server *grpc.Server) { pb.RegisterExampleServiceServer(server, srv) })
+	// Регистрация gRPC-Gateway proxy
+	grpcEntry.AddRegFuncGw(pb.RegisterExampleServiceHandlerFromEndpoint)
+	// Добавляем наши middleware
+	grpcEntry.AddUnaryInterceptors(
+		middleware.WithProtovalidateUnaryServerInterceptor(validator),
+	)
+	grpcEntry.AddStreamInterceptors()
+
+	// Bootstrap entry
+	// grpcEntry.Bootstrap(ctx)
+	boot.Bootstrap(ctx)
+
+	// Ждем сигнала выключения
+	boot.WaitForShutdownSig(ctx)
 }

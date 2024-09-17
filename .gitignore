@@ -1,3 +1,2 @@
 bin/
-vendor.protobuf/
-buf.lock
+.vscode

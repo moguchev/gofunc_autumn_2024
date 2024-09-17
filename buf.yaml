@@ -2,6 +2,7 @@
 version: v2
 modules:
   - path: proto
+    name: github.com/moguchev/gofunc_autumn_2024
   - path: vendor.protobuf
 # Lint: https://buf.build/docs/lint/overview#defaults-and-configuration
 # Categories: https://buf.build/docs/lint/rules
@@ -9,14 +10,32 @@ lint:
   use:
     - STANDARD
     - COMMENTS
+    - FILE_LOWER_SNAKE_CASE
   ignore:
     - vendor.protobuf
 breaking:
   use:
-    - FILE
+    # Categories: https://buf.build/docs/breaking/rules#categories
+    # The FILE and PACKAGE categories protect compatibility in generated code.
+    # - FILE # Default. Detects changes that move generated code between files, breaking generated source code on a per-file basis. This breaks generated stubs in some languages—for example, it's safe to move code between files in Go but not in Python.
+    - PACKAGE # Detects changes that break generated source code changes on a per-package basis. It detects changes that would break the generated stubs, but only accounting for package-level changes.
+    # WIRE and WIRE_JSON detect breakage of encoded messages.
+    - WIRE_JSON # Detects changes that break wire (binary) or JSON encoding. Because JSON is ubiquitous, we recommend this as the minimum level.
+    # - WIRE # Detects changes that break wire (binary) encoding.
+    # Rules: https://buf.build/docs/breaking/rules#rules
+    - ENUM_NO_DELETE
+    - ENUM_SAME_JSON_FORMAT
+    - ENUM_SAME_TYPE
+    - ENUM_VALUE_NO_DELETE
+    - ENUM_VALUE_NO_DELETE_UNLESS_NAME_RESERVED
+    - ENUM_VALUE_NO_DELETE_UNLESS_NUMBER_RESERVED
+    - ENUM_VALUE_SAME_NAME
+    - EXTENSION_MESSAGE_NO_DELETE
+    - EXTENSION_NO_DELETE
+    - FIELD_NO_DELETE
 # Dependency management by BSR: https://buf.build/docs/bsr/module/dependency-management#how-the-bsr-protects-your-dependencies
 # Need VPN
 # deps:
-#   - buf.build/googleapis/googleapis
-#   - buf.build/grpc-ecosystem/grpc-gateway
-#   - buf.build/bufbuild/protovalidate
+# - buf.build/googleapis/googleapis
+# - buf.build/grpc-ecosystem/grpc-gateway
+# - buf.build/bufbuild/protovalidate:v0.6.3 # пример с версией

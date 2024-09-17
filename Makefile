@@ -35,6 +35,9 @@ LOCAL_BIN := $(CURDIR)/bin
 # Генерация .pb файлов
 generate: .bin-deps .buf-generate .buf-format
 
+# Генерация .pb файлов без установки плагинов
+fast-generate: .buf-generate .buf-format
+
 # Линтер protobuf файлов
 .buf-lint:
 	$(info run buf lint...)
