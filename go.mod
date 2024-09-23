@@ -9,6 +9,7 @@ require (
 	github.com/rookie-ninja/rk-boot/v2 v2.2.22
 	github.com/rookie-ninja/rk-entry/v2 v2.2.22
 	github.com/rookie-ninja/rk-grpc/v2 v2.2.22
+	github.com/spf13/viper v1.17.0
 	go.uber.org/zap v1.25.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
 	google.golang.org/grpc v1.66.2
@@ -51,7 +52,6 @@ require (
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.17.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.opentelemetry.io/contrib v1.19.0 // indirect

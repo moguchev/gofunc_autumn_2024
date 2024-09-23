@@ -12,11 +12,8 @@ import (
 
 // WithProtovalidateUnaryServerInterceptor - Валидация (Вариант 2)
 func WithProtovalidateUnaryServerInterceptor(v *protovalidate.Validator) grpc.UnaryServerInterceptor {
-	return func(ctx context.Context, req any,
-		_ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-
-		msg, ok := req.(proto.Message)
-		if ok {
+	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		if msg, ok := req.(proto.Message); ok {
 			if err := v.Validate(msg); err != nil {
 				return nil, status.Error(codes.InvalidArgument, err.Error())
 			}
