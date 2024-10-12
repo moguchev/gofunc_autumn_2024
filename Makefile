@@ -3,6 +3,9 @@ include vendor.proto.mk
 # Используем bin в текущей директории для установки зависимостей
 LOCAL_BIN := $(CURDIR)/bin
 
+# Путь до buf
+BUF_BIN := $(LOCAL_BIN)/buf
+
 # Устанавливаем необходимые зависимости
 .bin-deps: export GOBIN := $(LOCAL_BIN)
 .bin-deps:
@@ -18,19 +21,19 @@ LOCAL_BIN := $(CURDIR)/bin
 .buf-deps:
 	$(info run buf dep update...)
 
-	PATH="$(LOCAL_BIN):$(PATH)" $(LOCAL_BIN)/buf dep update
+	PATH="$(LOCAL_BIN):$(PATH)" $(BUF_BIN) dep update
 
 # Генерация .pb файлов с помощью buf
 .buf-generate:
 	$(info run buf generate...)
 
-	PATH="$(LOCAL_BIN):$(PATH)" $(LOCAL_BIN)/buf generate
+	PATH="$(LOCAL_BIN):$(PATH)" $(BUF_BIN) generate
 
 # Форматирование protobuf файлов
 .buf-format:
 	$(info run buf format...)
 
-	$(LOCAL_BIN)/buf format -w	
+	$(BUF_BIN) format -w	
 
 # Генерация .pb файлов
 generate: .bin-deps .buf-generate .buf-format
@@ -42,7 +45,7 @@ fast-generate: .buf-generate .buf-format
 .buf-lint:
 	$(info run buf lint...)
 
-	$(LOCAL_BIN)/buf lint	
+	$(BUF_BIN) lint	
 
 # Линтер
 lint: .buf-lint

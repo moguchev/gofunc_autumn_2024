@@ -49,10 +49,10 @@ type Boot struct {
 // NewBoot - return new Boot
 func NewBoot(config []byte, opts ...Option) *Boot {
 	// Загрузжаем basic entries из конфигурации (boot.yaml).
-	rkentry.BootstrapBuiltInEntryFromYAML(config)
-	rkentry.BootstrapPluginEntryFromYAML(config)
-	rkentry.BootstrapUserEntryFromYAML(config)
-	rkentry.BootstrapWebFrameEntryFromYAML(config)
+	// rkentry.BootstrapBuiltInEntryFromYAML(config)
+	// rkentry.BootstrapPluginEntryFromYAML(config)
+	// rkentry.BootstrapUserEntryFromYAML(config)
+	// rkentry.BootstrapWebFrameEntryFromYAML(config)
 
 	// Загрузжаем entries из конфигурации (boot.yaml).
 	boot := rkboot.NewBoot(
