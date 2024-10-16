@@ -1,0 +1,22 @@
+version: "3.8"
+
+networks:
+  tracing:
+    driver: bridge
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.62 # https://www.jaegertracing.io/docs/1.62/getting-started/
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp" # accept jaeger.thrift over compact thrift protocol
+      - "6832:6832/udp" # accept jaeger.thrift over binary thrift protocol
+      - "5775:5775/udp" # (deprecated) accept zipkin.thrift over compact Thrift protocol (used by legacy clients only)
+      - "5778:5778" # serve configs (sampling, etc.)
+      - "16686:16686" # serve frontend (Web UI)
+      - "4317:4317" # accept OpenTelemetry Protocol (OTLP) over gRPC
+      - "4318:4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - "14268:14268" # accept jaeger.thrift directly from clients
+      - "9411:9411" # Zipkin compatible endpoint (optional)
+    networks:
+      - tracing

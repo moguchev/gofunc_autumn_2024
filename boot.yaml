@@ -164,18 +164,11 @@ grpc:
         ignore: [""]
         exporter:
           file:
-            enabled: true
+            enabled: false
             outputPath: "logs/trace.log"
-          jaeger:
-            agent:
-              enabled: false
-              host: "localhost"
-              port: 6831
-            collector:
-              enabled: false
-              endpoint: "http://localhost:14268/api/traces"
-              username: ""
-              password: ""
+          otlp:
+            enabled: true
+            endpoint: "localhost:4317"
       meta: # Send micsroservice metadata as header to client.
         enabled: true
 
